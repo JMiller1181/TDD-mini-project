@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import java.time.LocalDate;
 
 @Entity
-public class Order {
+public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -17,14 +17,14 @@ public class Order {
     private String shippingAddress;
     private Double total;
 
-    public Order(String customerName, LocalDate orderDate, String shippingAddress, Double total) {
+    public Orders(String customerName, LocalDate orderDate, String shippingAddress, Double total) {
         this.customerName = customerName;
         this.orderDate = orderDate;
         this.shippingAddress = shippingAddress;
         this.total = total;
     }
 
-    public Order() {
+    public Orders() {
     }
 
     public Long getId() {
@@ -65,5 +65,14 @@ public class Order {
 
     public void setTotal(Double total) {
         this.total = total;
+    }
+
+    @Override
+    public String toString(){
+        return "Order ID: " + id +
+                "\nCustomer Name: " + customerName +
+                "\nOrder Date: " + orderDate +
+                "\nShipping Address: " + shippingAddress +
+                "\nOrder Total: " + total;
     }
 }
