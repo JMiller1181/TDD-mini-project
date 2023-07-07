@@ -3,14 +3,11 @@ package com.fs104.tddminiproj;
 import com.fs104.tddminiproj.model.Orders;
 import com.fs104.tddminiproj.repository.OrderRepository;
 import com.fs104.tddminiproj.service.OrderService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         classes = TddMiniProjApplication.class
 )
 @TestPropertySource(locations = "classpath:application.properties")
-class TddMiniProjApplicationTests {
+class TddMiniProjApplicationServiceTests {
 
     @Autowired
     private OrderRepository repository;
@@ -31,7 +28,7 @@ class TddMiniProjApplicationTests {
     private OrderService service;
 
     @BeforeEach
-    void clearRepository(){
+    void setUpRepository(){
         LocalDate date = LocalDate.now();
         repository.saveAllAndFlush(List.of(
                 new Orders("John", date, "123 Park Place", 2.99),

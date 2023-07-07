@@ -14,8 +14,8 @@ public class OrderService {
     public OrderService(OrderRepository repository){
         this.repository = repository;
     }
-    public void createNewOrder(Orders orders){
-        repository.save(orders);
+    public Orders createNewOrder(Orders orders){
+        return repository.save(orders);
     }
     public Orders findExistingOrder(Long id){
         return repository.findById(id).orElseThrow(() -> new NoSuchElementException("Order not found with ID: " + id));
@@ -23,13 +23,13 @@ public class OrderService {
     public List<Orders> listAllOrders(){
         return repository.findAll();
     }
-    public void updateOrder(Long id, Orders orders){
+    public Orders updateOrder(Long id, Orders orders){
         Orders existingOrder = repository.findById(id).orElseThrow(() -> new NoSuchElementException("Order not found with ID: " + id));
         existingOrder.setCustomerName(orders.getCustomerName());
         existingOrder.setOrderDate(orders.getOrderDate());
         existingOrder.setShippingAddress(orders.getShippingAddress());
         existingOrder.setTotal(orders.getTotal());
-        repository.save(existingOrder);
+        return repository.save(existingOrder);
     }
     public void deleteOrder(Long id){
         repository.deleteById(id);
