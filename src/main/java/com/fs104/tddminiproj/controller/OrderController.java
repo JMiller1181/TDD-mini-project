@@ -2,8 +2,11 @@ package com.fs104.tddminiproj.controller;
 
 import com.fs104.tddminiproj.model.Orders;
 import com.fs104.tddminiproj.service.OrderService;
+
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,8 +22,8 @@ public class OrderController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Orders> createOrder(@RequestBody Orders orders){
-        return new ResponseEntity<>(orderService.createNewOrder(orders), HttpStatus.CREATED);
+    public ResponseEntity<Orders> createOrder(@Valid @RequestBody Orders orders) {
+            return new ResponseEntity<>(orderService.createNewOrder(orders), HttpStatus.CREATED);
     }
     @GetMapping("/read")
     public ResponseEntity<List<Orders>> listAllOrders(){
@@ -35,7 +38,7 @@ public class OrderController {
         return new ResponseEntity<>(orderService.findExistingOrder(id), HttpStatus.OK);
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<Orders> updateOrder(@PathVariable("id") Long id, @RequestBody Orders newOrder){
+    public ResponseEntity<Orders> updateOrder(@PathVariable("id") Long id, @Valid @RequestBody Orders newOrder){
         orderService.updateOrder(id, newOrder);
         return new ResponseEntity<>(orderService.findExistingOrder(id), HttpStatus.CREATED);
     }

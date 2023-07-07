@@ -4,9 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+
 
 import java.time.LocalDate;
 
@@ -15,11 +16,11 @@ public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @NotEmpty(message = "Customer name is required")
+    @NotBlank(message = "Customer name is required")
     private String customerName;
     @NotNull(message = "Date is required")
     private LocalDate orderDate;
-    @NotEmpty(message = "Shipping address is required")
+    @NotBlank(message = "Shipping address is required")
     private String shippingAddress;
     @Positive(message = "Total must be positive")
     private Double total;

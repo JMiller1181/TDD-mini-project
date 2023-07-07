@@ -101,5 +101,22 @@ public class TddMiniProjApplicationControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.delete("/orders/delete/{id}", orderID))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
-
+    @Test
+    void testThatBadValuesCauseAnErrorForCreation() throws Exception{
+        Orders order = new Orders("", null, "", -12.99);
+        mockMvc.perform(MockMvcRequestBuilders.post("/orders/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(order)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+    @Test
+    void testThatBadValuesCauseAnErrorForUpdate() throws Exception{
+        Long orderID = 1L;
+        Orders newOrder = new Orders("", null, "", -12.99);
+        newOrder.setId(orderID);
+        mockMvc.perform(MockMvcRequestBuilders.put("/orders/update/{id}", orderID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(newOrder)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
 }
