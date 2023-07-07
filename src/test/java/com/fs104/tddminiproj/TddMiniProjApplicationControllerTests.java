@@ -15,10 +15,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @WebMvcTest(OrderController.class)
 @TestPropertySource(locations = "classpath:application.properties")
@@ -118,5 +120,31 @@ public class TddMiniProjApplicationControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newOrder)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+    @Test
+    void testThatReadingAnInvalidIDReturnsError() throws Exception{
+        Long orderID = 1L;
+        when(orderService.findExistingOrder(orderID)).thenThrow(new NoSuchElementException("Order not found with ID: " + orderID));
+        mockMvc.perform(MockMvcRequestBuilders.get("/orders/read/{id}", orderID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
+    }
+    @Test
+    void testThatUpdatingNonExistingOrderReturnsError() throws Exception{
+        Long orderID = 1L;
+        Orders order = new Orders("John", LocalDate.now(), "123 Main Street", 12.99);
+        when(orderService.findExistingOrder(orderID)).thenThrow(new NoSuchElementException("Order not found with ID: " + orderID));
+        mockMvc.perform(MockMvcRequestBuilders.put("/orders/update/{id}", orderID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(order)))
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
+    }
+    @Test
+    void testThatDeletingNonExistingOrderReturnsError() throws Exception{
+        Long orderID = 1L;
+        doThrow(new NoSuchElementException("Order not found with ID: " + orderID))
+                .when(orderService).deleteOrder(orderID);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/orders/delete/{id}", orderID))
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
     }
 }

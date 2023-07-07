@@ -6,7 +6,6 @@ import com.fs104.tddminiproj.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,28 +22,48 @@ public class OrderController {
 
     @PostMapping("/create")
     public ResponseEntity<Orders> createOrder(@Valid @RequestBody Orders orders) {
-            return new ResponseEntity<>(orderService.createNewOrder(orders), HttpStatus.CREATED);
+            try {
+                return new ResponseEntity<>(orderService.createNewOrder(orders), HttpStatus.CREATED);
+            } catch (Exception e){
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
     }
     @GetMapping("/read")
     public ResponseEntity<List<Orders>> listAllOrders(){
-        List<Orders> listOfOrders = orderService.listAllOrders();
-        if (listOfOrders.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            List<Orders> listOfOrders = orderService.listAllOrders();
+            if (listOfOrders.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(listOfOrders, HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(listOfOrders, HttpStatus.OK);
     }
     @GetMapping("/read/{id}")
     public ResponseEntity<Orders> readOrder(@PathVariable("id") Long id){
-        return new ResponseEntity<>(orderService.findExistingOrder(id), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(orderService.findExistingOrder(id), HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     @PutMapping("/update/{id}")
     public ResponseEntity<Orders> updateOrder(@PathVariable("id") Long id, @Valid @RequestBody Orders newOrder){
-        orderService.updateOrder(id, newOrder);
-        return new ResponseEntity<>(orderService.findExistingOrder(id), HttpStatus.CREATED);
+        try {
+            orderService.updateOrder(id, newOrder);
+            return new ResponseEntity<>(orderService.findExistingOrder(id), HttpStatus.CREATED);
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteOrder(@PathVariable("id") Long id){
-        orderService.deleteOrder(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            orderService.deleteOrder(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
